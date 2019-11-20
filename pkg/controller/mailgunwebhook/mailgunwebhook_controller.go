@@ -111,9 +111,7 @@ func checkWebhook(ctx context.Context, mg *mailgun.MailgunImpl, kind string, url
 			status := mailgun.GetStatusFromErr(err)
 
 			if status == 404 {
-				if err := mg.CreateWebhook(ctx, kind, urls); err == nil {
-					return nil
-				}
+				err = mg.CreateWebhook(ctx, kind, urls)
 			}
 			return err
 		}
