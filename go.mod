@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/cosiner/argv v0.0.1 // indirect
 	github.com/go-delve/delve v1.3.2 // indirect
+	github.com/go-logr/logr v0.1.0
 	github.com/go-openapi/spec v0.19.0
 	github.com/mailgun/mailgun-go v2.0.0+incompatible // indirect
 	github.com/mailgun/mailgun-go/v3 v3.6.2
