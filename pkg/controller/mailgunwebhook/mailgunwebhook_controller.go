@@ -6,6 +6,7 @@ import (
 
 	"time"
 
+	"github.com/go-logr/logr"
 	"github.com/mailgun/mailgun-go/v3"
 	mailgunv1alpha1 "github.com/whyseco/mailgun-operator/pkg/apis/mailgun/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -56,6 +57,8 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 
 // blank assignment to verify that ReconcileMailgunWebhook implements reconcile.Reconciler
 var _ reconcile.Reconciler = &ReconcileMailgunWebhook{}
+
+const webhookFinalizer = "finalizer.webhook.mailgun.com"
 
 // ReconcileMailgunWebhook reconciles a MailgunWebhook object
 type ReconcileMailgunWebhook struct {
@@ -117,7 +120,37 @@ func (r *ReconcileMailgunWebhook) Reconcile(request reconcile.Request) (reconcil
 		return reconcile.Result{}, err
 	}
 
-	return reconcile.Result{}, err
+	// Check if the Webhook instance is marked to be deleted, which is
+	// indicated by the deletion timestamp being set.
+	isWebhookMarkedToBeDeleted := instance.GetDeletionTimestamp() != nil
+	if isWebhookMarkedToBeDeleted {
+		if contains(instance.GetFinalizers(), webhookFinalizer) {
+			// Run finalization logic for webhookFinalizer. If the
+			// finalization logic fails, don't remove the finalizer so
+			// that we can retry during the next reconciliation.
+			if err := r.finalizeMailgunWebhook(reqLogger, instance, mg, ctx); err != nil {
+				return reconcile.Result{}, err
+			}
+
+			// Remove webhookFinalizer. Once all finalizers have been
+			// removed, the object will be deleted.
+			instance.SetFinalizers(remove(instance.GetFinalizers(), webhookFinalizer))
+			err := r.client.Update(context.TODO(), instance)
+			if err != nil {
+				return reconcile.Result{}, err
+			}
+		}
+		return reconcile.Result{}, nil
+	}
+
+	// Add finalizer for this CR
+	if !contains(instance.GetFinalizers(), webhookFinalizer) {
+		if err := r.addFinalizer(reqLogger, instance); err != nil {
+			return reconcile.Result{}, err
+		}
+	}
+
+	return reconcile.Result{}, nil
 }
 
 func checkWebhook(ctx context.Context, mg *mailgun.MailgunImpl, kind string, urls []string) error {
@@ -148,4 +181,50 @@ func checkWebhook(ctx context.Context, mg *mailgun.MailgunImpl, kind string, url
 		}
 	}
 	return nil
+}
+
+func (r *ReconcileMailgunWebhook) finalizeMailgunWebhook(reqLogger logr.Logger, m *mailgunv1alpha1.MailgunWebhook,
+	mg *mailgun.MailgunImpl, ctx context.Context) error {
+
+	mg.DeleteWebhook(ctx, "clicked")
+	mg.DeleteWebhook(ctx, "complained")
+	mg.DeleteWebhook(ctx, "delivered")
+	mg.DeleteWebhook(ctx, "opened")
+	mg.DeleteWebhook(ctx, "permanent_fail")
+	mg.DeleteWebhook(ctx, "temporary_fail")
+	mg.DeleteWebhook(ctx, "unsubscribed")
+
+	reqLogger.Info("Successfully finalized MailgunWebhook")
+	return nil
+}
+
+func (r *ReconcileMailgunWebhook) addFinalizer(reqLogger logr.Logger, m *mailgunv1alpha1.MailgunWebhook) error {
+	reqLogger.Info("Adding Finalizer for the MailgunWebhook")
+	m.SetFinalizers(append(m.GetFinalizers(), webhookFinalizer))
+
+	// Update CR
+	err := r.client.Update(context.TODO(), m)
+	if err != nil {
+		reqLogger.Error(err, "Failed to update MailgunWebhook with finalizer")
+		return err
+	}
+	return nil
+}
+
+func contains(list []string, s string) bool {
+	for _, v := range list {
+		if v == s {
+			return true
+		}
+	}
+	return false
+}
+
+func remove(list []string, s string) []string {
+	for i, v := range list {
+		if v == s {
+			list = append(list[:i], list[i+1:]...)
+		}
+	}
+	return list
 }
