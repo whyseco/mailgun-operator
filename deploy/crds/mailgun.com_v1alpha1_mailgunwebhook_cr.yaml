@@ -1,0 +1,9 @@
+apiVersion: mailgun.com/v1alpha1
+kind: MailgunWebhook
+metadata:
+  name: mailgun-test
+spec:
+  domain: <domain>
+  apiKey: <apiKey>
+  opened:
+    - <url>
