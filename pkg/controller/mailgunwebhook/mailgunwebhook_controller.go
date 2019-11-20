@@ -2,6 +2,7 @@ package mailgunwebhook
 
 import (
 	"context"
+	"reflect"
 
 	"time"
 
@@ -93,15 +94,23 @@ func (r *ReconcileMailgunWebhook) Reconcile(request reconcile.Request) (reconcil
 	defer cancel()
 
 	mg := mailgun.NewMailgun(instance.Spec.Domain, instance.Spec.ApiKey)
-	if err := mg.UpdateWebhook(ctx, "opened", instance.Spec.Opened); err != nil {
-		status := mailgun.GetStatusFromErr(err)
 
-		if status == 404 {
-			if err := mg.CreateWebhook(ctx, "opened", instance.Spec.Opened); err == nil {
-				return reconcile.Result{}, nil
-			}
-		}
+	currentUrls, err := mg.GetWebhook(ctx, "opened")
+	if err != nil {
 		return reconcile.Result{}, err
+	}
+
+	if !reflect.DeepEqual(currentUrls, instance.Spec.Opened) {
+		if err := mg.UpdateWebhook(ctx, "opened", instance.Spec.Opened); err != nil {
+			status := mailgun.GetStatusFromErr(err)
+
+			if status == 404 {
+				if err := mg.CreateWebhook(ctx, "opened", instance.Spec.Opened); err == nil {
+					return reconcile.Result{}, nil
+				}
+			}
+			return reconcile.Result{}, err
+		}
 	}
 
 	return reconcile.Result{}, nil
