@@ -97,7 +97,7 @@ func (r *ReconcileMailgunWebhook) Reconcile(request reconcile.Request) (reconcil
 		status := mailgun.GetStatusFromErr(err)
 
 		if status == 404 {
-			if err2 := mg.CreateWebhook(ctx, "opened", instance.Spec.Opened); err2 == nil {
+			if err := mg.CreateWebhook(ctx, "opened", instance.Spec.Opened); err == nil {
 				return reconcile.Result{}, nil
 			}
 		}
