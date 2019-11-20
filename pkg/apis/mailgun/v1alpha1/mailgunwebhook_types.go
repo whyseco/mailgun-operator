@@ -13,17 +13,37 @@ type MailgunWebhookSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
-	
+
 	Domain string `json:"domain"`
 	ApiKey string `json:"apiKey"`
 	// +kubebuilder:validation:MaxItems=3
-    // +kubebuilder:validation:MinItems=0
-    // +kubebuilder:validation:UniqueItems=true
+	// +kubebuilder:validation:MinItems=0
+	// +listType=set
+	Clicked []string `json:"clicked,omitempty"`
+	// +kubebuilder:validation:MaxItems=3
+	// +kubebuilder:validation:MinItems=0
+	// +listType=set
+	Complained []string `json:"complained,omitempty"`
+	// +kubebuilder:validation:MaxItems=3
+	// +kubebuilder:validation:MinItems=0
+	// +listType=set
+	Delivered []string `json:"delivered,omitempty"`
+	// +kubebuilder:validation:MaxItems=3
+	// +kubebuilder:validation:MinItems=0
+	// +listType=set
 	Opened []string `json:"opened,omitempty"`
 	// +kubebuilder:validation:MaxItems=3
-    // +kubebuilder:validation:MinItems=0
-    // +kubebuilder:validation:UniqueItems=true
-    Clicked []string `json:"clicked,omitempty"`
+	// +kubebuilder:validation:MinItems=0
+	// +listType=set
+	PermanentFail []string `json:"permanentFail,omitempty"`
+	// +kubebuilder:validation:MaxItems=3
+	// +kubebuilder:validation:MinItems=0
+	// +listType=set
+	TemporaryFail []string `json:"temporaryFail,omitempty"`
+	// +kubebuilder:validation:MaxItems=3
+	// +kubebuilder:validation:MinItems=0
+	// +listType=set
+	Unsubscribed []string `json:"unsubscribed,omitempty"`
 }
 
 // MailgunWebhookStatus defines the observed state of MailgunWebhook
@@ -32,14 +52,7 @@ type MailgunWebhookStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
-	// +kubebuilder:validation:MaxItems=3
-    // +kubebuilder:validation:MinItems=0
-    // +kubebuilder:validation:UniqueItems=true
-	Opened []string `json:"opened"`
-	// +kubebuilder:validation:MaxItems=3
-    // +kubebuilder:validation:MinItems=0
-    // +kubebuilder:validation:UniqueItems=true
-    Clicked []string `json:"clicked"`
+	Ready bool `json:"ready"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

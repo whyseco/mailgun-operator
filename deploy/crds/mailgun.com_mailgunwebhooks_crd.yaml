@@ -39,7 +39,18 @@ spec:
               maxItems: 3
               minItems: 0
               type: array
-              uniqueItems: true
+            complained:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
+            delivered:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
             domain:
               type: string
             opened:
@@ -48,7 +59,24 @@ spec:
               maxItems: 3
               minItems: 0
               type: array
-              uniqueItems: true
+            permanentFail:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
+            temporaryFail:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
+            unsubscribed:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
           required:
           - apiKey
           - domain
@@ -56,27 +84,14 @@ spec:
         status:
           description: MailgunWebhookStatus defines the observed state of MailgunWebhook
           properties:
-            clicked:
-              items:
-                type: string
-              maxItems: 3
-              minItems: 0
-              type: array
-              uniqueItems: true
-            opened:
+            ready:
               description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
                 of cluster Important: Run "operator-sdk generate k8s" to regenerate
                 code after modifying this file Add custom validation using kubebuilder
                 tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
-              items:
-                type: string
-              maxItems: 3
-              minItems: 0
-              type: array
-              uniqueItems: true
+              type: boolean
           required:
-          - clicked
-          - opened
+          - ready
           type: object
       type: object
   version: v1alpha1
