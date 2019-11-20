@@ -95,23 +95,28 @@ func (r *ReconcileMailgunWebhook) Reconcile(request reconcile.Request) (reconcil
 
 	mg := mailgun.NewMailgun(instance.Spec.Domain, instance.Spec.ApiKey)
 
-	currentUrls, err := mg.GetWebhook(ctx, "opened")
+	err = checkWebhook(ctx, mg, "opened", instance.Spec.Opened)
+
+	return reconcile.Result{}, err
+}
+
+func checkWebhook(ctx context.Context, mg *mailgun.MailgunImpl, kind string, urls []string) error {
+	currentUrls, err := mg.GetWebhook(ctx, kind)
 	if err != nil {
-		return reconcile.Result{}, err
+		return err
 	}
 
-	if !reflect.DeepEqual(currentUrls, instance.Spec.Opened) {
-		if err := mg.UpdateWebhook(ctx, "opened", instance.Spec.Opened); err != nil {
+	if !reflect.DeepEqual(currentUrls, urls) {
+		if err := mg.UpdateWebhook(ctx, kind, urls); err != nil {
 			status := mailgun.GetStatusFromErr(err)
 
 			if status == 404 {
-				if err := mg.CreateWebhook(ctx, "opened", instance.Spec.Opened); err == nil {
-					return reconcile.Result{}, nil
+				if err := mg.CreateWebhook(ctx, kind, urls); err == nil {
+					return nil
 				}
 			}
-			return reconcile.Result{}, err
+			return err
 		}
 	}
-
-	return reconcile.Result{}, nil
+	return nil
 }
