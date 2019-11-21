@@ -121,14 +121,14 @@ func schema_pkg_apis_mailgun_v1alpha1_MailgunDomainSpec(ref common.ReferenceCall
 				Properties: map[string]spec.Schema{
 					"domain": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Domain to create in mailgun: https://help.mailgun.com/hc/en-us/articles/202256730-How-Do-I-Pick-a-Domain-Name-for-My-Mailgun-Account-",
+							Description: "Domain to use in mailgun",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
-					"apiKey": {
+					"secretName": {
 						SchemaProps: spec.SchemaProps{
-							Description: "API key to authenticate to mailgun API https://help.mailgun.com/hc/en-us/articles/203380100-Where-Can-I-Find-My-API-Key-and-SMTP-Credentials-",
+							Description: "secret name where we can find apiKey",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -152,13 +152,13 @@ func schema_pkg_apis_mailgun_v1alpha1_MailgunDomainSpec(ref common.ReferenceCall
 							Format: "",
 						},
 					},
-					"force_dkim_authority": {
+					"forceDkimAuthority": {
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"boolean"},
 							Format: "",
 						},
 					},
-					"dkim_key_size": {
+					"dkimKeySize": {
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"integer"},
 							Format: "int32",
@@ -189,7 +189,7 @@ func schema_pkg_apis_mailgun_v1alpha1_MailgunDomainSpec(ref common.ReferenceCall
 						},
 					},
 				},
-				Required: []string{"domain", "apiKey"},
+				Required: []string{"domain", "secretName"},
 			},
 		},
 	}
@@ -309,9 +309,9 @@ func schema_pkg_apis_mailgun_v1alpha1_MailgunRouteSpec(ref common.ReferenceCallb
 							Format:      "",
 						},
 					},
-					"apiKey": {
+					"secretName": {
 						SchemaProps: spec.SchemaProps{
-							Description: "API key to authenticate to mailgun API https://help.mailgun.com/hc/en-us/articles/203380100-Where-Can-I-Find-My-API-Key-and-SMTP-Credentials-",
+							Description: "secret name where we can find apiKey",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -354,7 +354,7 @@ func schema_pkg_apis_mailgun_v1alpha1_MailgunRouteSpec(ref common.ReferenceCallb
 						},
 					},
 				},
-				Required: []string{"domain", "apiKey", "expression", "priority"},
+				Required: []string{"domain", "secretName", "expression", "priority"},
 			},
 		},
 	}
@@ -433,14 +433,16 @@ func schema_pkg_apis_mailgun_v1alpha1_MailgunWebhookSpec(ref common.ReferenceCal
 				Properties: map[string]spec.Schema{
 					"domain": {
 						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
+							Description: "Domain to use in mailgun",
+							Type:        []string{"string"},
+							Format:      "",
 						},
 					},
-					"apiKey": {
+					"secretName": {
 						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
+							Description: "secret name where we can find apiKey",
+							Type:        []string{"string"},
+							Format:      "",
 						},
 					},
 					"clicked": {
@@ -570,7 +572,7 @@ func schema_pkg_apis_mailgun_v1alpha1_MailgunWebhookSpec(ref common.ReferenceCal
 						},
 					},
 				},
-				Required: []string{"domain", "apiKey"},
+				Required: []string{"domain", "secretName"},
 			},
 		},
 	}

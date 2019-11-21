@@ -8,6 +8,7 @@ import (
 	"github.com/mailgun/mailgun-go/v3"
 	"github.com/thoas/go-funk"
 	mailgunv1alpha1 "github.com/whyseco/mailgun-operator/pkg/apis/mailgun/v1alpha1"
+	"github.com/whyseco/mailgun-operator/pkg/helpers"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -104,7 +105,12 @@ func (r *ReconcileMailgunRoute) Reconcile(request reconcile.Request) (reconcile.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
-	mg := mailgun.NewMailgun(instance.Spec.Domain, instance.Spec.ApiKey)
+	apiKey := ""
+	if apiKey, err = helpers.GetApiKey(ctx, reqLogger, r.client, instance.Spec.SecretName, request.Namespace); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	mg := mailgun.NewMailgun(instance.Spec.Domain, apiKey)
 	// Check if the Route instance is marked to be deleted, which is
 	// indicated by the deletion timestamp being set.
 	isRouteMarkedToBeDeleted := instance.GetDeletionTimestamp() != nil

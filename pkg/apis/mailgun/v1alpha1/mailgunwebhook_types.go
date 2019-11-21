@@ -10,12 +10,10 @@ import (
 // MailgunWebhookSpec defines the desired state of MailgunWebhook
 // +k8s:openapi-gen=true
 type MailgunWebhookSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
-
+	// Domain to use in mailgun
 	Domain string `json:"domain"`
-	ApiKey string `json:"apiKey"`
+	// secret name where we can find apiKey
+	SecretName string `json:"secretName"`
 	// +kubebuilder:validation:MaxItems=3
 	// +kubebuilder:validation:MinItems=0
 	// +listType=set

@@ -36,9 +36,6 @@ spec:
                 type: string
               minItems: 1
               type: array
-            apiKey:
-              description: API key to authenticate to mailgun API https://help.mailgun.com/hc/en-us/articles/203380100-Where-Can-I-Find-My-API-Key-and-SMTP-Credentials-
-              type: string
             description:
               type: string
             domain:
@@ -49,11 +46,14 @@ spec:
               type: string
             priority:
               type: integer
+            secretName:
+              description: secret name where we can find apiKey
+              type: string
           required:
-          - apiKey
           - domain
           - expression
           - priority
+          - secretName
           type: object
         status:
           description: MailgunRouteStatus defines the observed state of MailgunRoute

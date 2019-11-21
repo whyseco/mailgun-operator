@@ -4,4 +4,4 @@ metadata:
   name: example-mailgundomain
 spec:
   domain: <domain>
-  apiKey: <apiKey>
+  secretName: mailgun-secret

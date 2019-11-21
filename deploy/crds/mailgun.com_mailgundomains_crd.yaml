@@ -31,15 +31,12 @@ spec:
         spec:
           description: MailgunDomainSpec defines the desired state of MailgunDomain
           properties:
-            apiKey:
-              description: API key to authenticate to mailgun API https://help.mailgun.com/hc/en-us/articles/203380100-Where-Can-I-Find-My-API-Key-and-SMTP-Credentials-
-              type: string
-            dkim_key_size:
+            dkimKeySize:
               type: integer
             domain:
-              description: 'Domain to create in mailgun: https://help.mailgun.com/hc/en-us/articles/202256730-How-Do-I-Pick-a-Domain-Name-for-My-Mailgun-Account-'
+              description: Domain to use in mailgun
               type: string
-            force_dkim_authority:
+            forceDkimAuthority:
               type: boolean
             ips:
               items:
@@ -49,6 +46,9 @@ spec:
             password:
               description: See https://documentation.mailgun.com/en/latest/api-domains.html#domains
               type: string
+            secretName:
+              description: secret name where we can find apiKey
+              type: string
             spamAction:
               type: string
             webScheme:
@@ -56,8 +56,8 @@ spec:
             wildcard:
               type: boolean
           required:
-          - apiKey
           - domain
+          - secretName
           type: object
         status:
           description: MailgunDomainStatus defines the observed state of MailgunDomain

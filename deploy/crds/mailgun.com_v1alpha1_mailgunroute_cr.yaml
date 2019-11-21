@@ -3,8 +3,8 @@ kind: MailgunRoute
 metadata:
   name: example-mailgunroute
 spec:
-  domain: <domain>
-  apiKey: <apiKey>
+  domain: sandboxdf4d5910068941b7a4993947915e8393.mailgun.org
+  secretName: mailgun-secret
   expression: match_recipient(".*@bar.com")
   priority: 0
   actions:

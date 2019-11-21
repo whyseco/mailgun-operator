@@ -31,8 +31,6 @@ spec:
         spec:
           description: MailgunWebhookSpec defines the desired state of MailgunWebhook
           properties:
-            apiKey:
-              type: string
             clicked:
               items:
                 type: string
@@ -52,6 +50,7 @@ spec:
               minItems: 0
               type: array
             domain:
+              description: Domain to use in mailgun
               type: string
             opened:
               items:
@@ -65,6 +64,9 @@ spec:
               maxItems: 3
               minItems: 0
               type: array
+            secretName:
+              description: secret name where we can find apiKey
+              type: string
             temporaryFail:
               items:
                 type: string
@@ -78,8 +80,8 @@ spec:
               minItems: 0
               type: array
           required:
-          - apiKey
           - domain
+          - secretName
           type: object
         status:
           description: MailgunWebhookStatus defines the observed state of MailgunWebhook

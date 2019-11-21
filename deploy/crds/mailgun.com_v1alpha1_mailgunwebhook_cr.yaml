@@ -4,6 +4,6 @@ metadata:
   name: mailgun-test
 spec:
   domain: <domain>
-  apiKey: <apiKey>
+  secretName: mailgun-secret
   opened:
     - <url>

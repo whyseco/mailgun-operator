@@ -22,17 +22,17 @@ const (
 // MailgunDomainSpec defines the desired state of MailgunDomain
 // +k8s:openapi-gen=true
 type MailgunDomainSpec struct {
-	// Domain to create in mailgun: https://help.mailgun.com/hc/en-us/articles/202256730-How-Do-I-Pick-a-Domain-Name-for-My-Mailgun-Account-
+	// Domain to use in mailgun
 	Domain string `json:"domain"`
-	// API key to authenticate to mailgun API https://help.mailgun.com/hc/en-us/articles/203380100-Where-Can-I-Find-My-API-Key-and-SMTP-Credentials-
-	ApiKey string `json:"apiKey"`
+	// secret name where we can find apiKey
+	SecretName string `json:"secretName"`
 
 	// See https://documentation.mailgun.com/en/latest/api-domains.html#domains
 	Password           string         `json:"password,omitempty"`
 	SpamAction         SpamActionType `json:"spamAction,omitempty"`
 	Wildcard           bool           `json:"wildcard,omitempty"`
-	ForceDKIMAuthority bool           `json:"force_dkim_authority,omitempty"`
-	DKIMKeySize        int            `json:"dkim_key_size,omitempty"`
+	ForceDKIMAuthority bool           `json:"forceDkimAuthority,omitempty"`
+	DKIMKeySize        int            `json:"dkimKeySize,omitempty"`
 	// +kubebuilder:validation:MinItems=0
 	// +listType=set
 	IPS       []string      `json:"ips,omitempty"`
