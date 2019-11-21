@@ -1,0 +1,7 @@
+apiVersion: mailgun.com/v1alpha1
+kind: MailgunDomain
+metadata:
+  name: example-mailgundomain
+spec:
+  domain: <domain>
+  apiKey: <apiKey>

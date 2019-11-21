@@ -6,6 +6,7 @@ import (
 
 	"time"
 
+	"github.com/thoas/go-funk"
 	"github.com/go-logr/logr"
 	"github.com/mailgun/mailgun-go/v3"
 	mailgunv1alpha1 "github.com/whyseco/mailgun-operator/pkg/apis/mailgun/v1alpha1"
@@ -21,11 +22,6 @@ import (
 )
 
 var log = logf.Log.WithName("controller_mailgunwebhook")
-
-/**
-* USER ACTION REQUIRED: This is a scaffold file intended for the user to modify with their own Controller
-* business logic.  Delete these comments after modifying this file.*
- */
 
 // Add creates a new MailgunWebhook Controller and adds it to the Manager. The Manager will set fields on the Controller
 // and Start it when the Manager is Started.
@@ -124,7 +120,7 @@ func (r *ReconcileMailgunWebhook) Reconcile(request reconcile.Request) (reconcil
 	// indicated by the deletion timestamp being set.
 	isWebhookMarkedToBeDeleted := instance.GetDeletionTimestamp() != nil
 	if isWebhookMarkedToBeDeleted {
-		if contains(instance.GetFinalizers(), webhookFinalizer) {
+		if funk.Contains(instance.GetFinalizers(), webhookFinalizer) {
 			// Run finalization logic for webhookFinalizer. If the
 			// finalization logic fails, don't remove the finalizer so
 			// that we can retry during the next reconciliation.
@@ -134,7 +130,8 @@ func (r *ReconcileMailgunWebhook) Reconcile(request reconcile.Request) (reconcil
 
 			// Remove webhookFinalizer. Once all finalizers have been
 			// removed, the object will be deleted.
-			instance.SetFinalizers(remove(instance.GetFinalizers(), webhookFinalizer))
+			finalizers := funk.FilterString(instance.GetFinalizers(), func(x string) bool { return x != webhookFinalizer })
+			instance.SetFinalizers(finalizers)
 			err := r.client.Update(context.TODO(), instance)
 			if err != nil {
 				return reconcile.Result{}, err
@@ -144,7 +141,7 @@ func (r *ReconcileMailgunWebhook) Reconcile(request reconcile.Request) (reconcil
 	}
 
 	// Add finalizer for this CR
-	if !contains(instance.GetFinalizers(), webhookFinalizer) {
+	if !funk.Contains(instance.GetFinalizers(), webhookFinalizer) {
 		if err := r.addFinalizer(reqLogger, instance); err != nil {
 			return reconcile.Result{}, err
 		}
@@ -209,22 +206,4 @@ func (r *ReconcileMailgunWebhook) addFinalizer(reqLogger logr.Logger, m *mailgun
 		return err
 	}
 	return nil
-}
-
-func contains(list []string, s string) bool {
-	for _, v := range list {
-		if v == s {
-			return true
-		}
-	}
-	return false
-}
-
-func remove(list []string, s string) []string {
-	for i, v := range list {
-		if v == s {
-			list = append(list[:i], list[i+1:]...)
-		}
-	}
-	return list
 }

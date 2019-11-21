@@ -15,6 +15,7 @@ require (
 	github.com/operator-framework/operator-sdk v0.12.0
 	github.com/peterh/liner v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5
+	github.com/thoas/go-funk v0.4.0
 	go.starlark.net v0.0.0-20191113183327-aaf7be003892 // indirect
 	golang.org/x/arch v0.0.0-20191101135251-a0d8588395bd // indirect
 	golang.org/x/sys v0.0.0-20191119060738-e882bf8e40c2 // indirect

@@ -58,5 +58,6 @@ rules:
   - mailgun.com
   resources:
   - '*'
+  - mailgundomains
   verbs:
   - '*'
