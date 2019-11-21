@@ -52,7 +52,9 @@ type MailgunDomainDnsRecord struct {
 // MailgunDomainStatus defines the observed state of MailgunDomain
 // +k8s:openapi-gen=true
 type MailgunDomainStatus struct {
-	SendingDnsRecord   []MailgunDomainDnsRecord `json:"sendingDnsRecord,omitempty"`
+	// +listType=set
+	SendingDnsRecord []MailgunDomainDnsRecord `json:"sendingDnsRecord,omitempty"`
+	// +listType=set
 	ReceivingDnsRecord []MailgunDomainDnsRecord `json:"receivingDnsRecord,omitempty"`
 	DomainState        string                   `json:"domainState"`
 }

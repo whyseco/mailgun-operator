@@ -11,12 +11,16 @@ import (
 
 func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenAPIDefinition {
 	return map[string]common.OpenAPIDefinition{
-		"./pkg/apis/mailgun/v1alpha1.MailgunDomain":        schema_pkg_apis_mailgun_v1alpha1_MailgunDomain(ref),
-		"./pkg/apis/mailgun/v1alpha1.MailgunDomainSpec":    schema_pkg_apis_mailgun_v1alpha1_MailgunDomainSpec(ref),
-		"./pkg/apis/mailgun/v1alpha1.MailgunDomainStatus":  schema_pkg_apis_mailgun_v1alpha1_MailgunDomainStatus(ref),
-		"./pkg/apis/mailgun/v1alpha1.MailgunWebhook":       schema_pkg_apis_mailgun_v1alpha1_MailgunWebhook(ref),
-		"./pkg/apis/mailgun/v1alpha1.MailgunWebhookSpec":   schema_pkg_apis_mailgun_v1alpha1_MailgunWebhookSpec(ref),
-		"./pkg/apis/mailgun/v1alpha1.MailgunWebhookStatus": schema_pkg_apis_mailgun_v1alpha1_MailgunWebhookStatus(ref),
+		"./pkg/apis/mailgun/v1alpha1.MailgunDomain":          schema_pkg_apis_mailgun_v1alpha1_MailgunDomain(ref),
+		"./pkg/apis/mailgun/v1alpha1.MailgunDomainDnsRecord": schema_pkg_apis_mailgun_v1alpha1_MailgunDomainDnsRecord(ref),
+		"./pkg/apis/mailgun/v1alpha1.MailgunDomainSpec":      schema_pkg_apis_mailgun_v1alpha1_MailgunDomainSpec(ref),
+		"./pkg/apis/mailgun/v1alpha1.MailgunDomainStatus":    schema_pkg_apis_mailgun_v1alpha1_MailgunDomainStatus(ref),
+		"./pkg/apis/mailgun/v1alpha1.MailgunRoute":           schema_pkg_apis_mailgun_v1alpha1_MailgunRoute(ref),
+		"./pkg/apis/mailgun/v1alpha1.MailgunRouteSpec":       schema_pkg_apis_mailgun_v1alpha1_MailgunRouteSpec(ref),
+		"./pkg/apis/mailgun/v1alpha1.MailgunRouteStatus":     schema_pkg_apis_mailgun_v1alpha1_MailgunRouteStatus(ref),
+		"./pkg/apis/mailgun/v1alpha1.MailgunWebhook":         schema_pkg_apis_mailgun_v1alpha1_MailgunWebhook(ref),
+		"./pkg/apis/mailgun/v1alpha1.MailgunWebhookSpec":     schema_pkg_apis_mailgun_v1alpha1_MailgunWebhookSpec(ref),
+		"./pkg/apis/mailgun/v1alpha1.MailgunWebhookStatus":   schema_pkg_apis_mailgun_v1alpha1_MailgunWebhookStatus(ref),
 	}
 }
 
@@ -64,6 +68,50 @@ func schema_pkg_apis_mailgun_v1alpha1_MailgunDomain(ref common.ReferenceCallback
 	}
 }
 
+func schema_pkg_apis_mailgun_v1alpha1_MailgunDomainDnsRecord(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "MailgunDomainDnsRecord defines the receiving and sending dns record provided by mailgun",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"recordType": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"valid": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"priority": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"value": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+				},
+				Required: []string{"recordType", "valid", "value"},
+			},
+		},
+	}
+}
+
 func schema_pkg_apis_mailgun_v1alpha1_MailgunDomainSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -73,21 +121,23 @@ func schema_pkg_apis_mailgun_v1alpha1_MailgunDomainSpec(ref common.ReferenceCall
 				Properties: map[string]spec.Schema{
 					"domain": {
 						SchemaProps: spec.SchemaProps{
-							Description: "INSERT ADDITIONAL SPEC FIELDS - desired state of cluster Important: Run \"operator-sdk generate k8s\" to regenerate code after modifying this file Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html",
+							Description: "Domain to create in mailgun: https://help.mailgun.com/hc/en-us/articles/202256730-How-Do-I-Pick-a-Domain-Name-for-My-Mailgun-Account-",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
 					"apiKey": {
 						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
+							Description: "API key to authenticate to mailgun API https://help.mailgun.com/hc/en-us/articles/203380100-Where-Can-I-Find-My-API-Key-and-SMTP-Credentials-",
+							Type:        []string{"string"},
+							Format:      "",
 						},
 					},
 					"password": {
 						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
+							Description: "See https://documentation.mailgun.com/en/latest/api-domains.html#domains",
+							Type:        []string{"string"},
+							Format:      "",
 						},
 					},
 					"spamAction": {
@@ -151,6 +201,180 @@ func schema_pkg_apis_mailgun_v1alpha1_MailgunDomainStatus(ref common.ReferenceCa
 			SchemaProps: spec.SchemaProps{
 				Description: "MailgunDomainStatus defines the observed state of MailgunDomain",
 				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"sendingDnsRecord": {
+						VendorExtensible: spec.VendorExtensible{
+							Extensions: spec.Extensions{
+								"x-kubernetes-list-type": "set",
+							},
+						},
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: ref("./pkg/apis/mailgun/v1alpha1.MailgunDomainDnsRecord"),
+									},
+								},
+							},
+						},
+					},
+					"receivingDnsRecord": {
+						VendorExtensible: spec.VendorExtensible{
+							Extensions: spec.Extensions{
+								"x-kubernetes-list-type": "set",
+							},
+						},
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: ref("./pkg/apis/mailgun/v1alpha1.MailgunDomainDnsRecord"),
+									},
+								},
+							},
+						},
+					},
+					"domainState": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+				},
+				Required: []string{"domainState"},
+			},
+		},
+		Dependencies: []string{
+			"./pkg/apis/mailgun/v1alpha1.MailgunDomainDnsRecord"},
+	}
+}
+
+func schema_pkg_apis_mailgun_v1alpha1_MailgunRoute(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "MailgunRoute is the Schema for the mailgunroutes API",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"metadata": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"),
+						},
+					},
+					"spec": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("./pkg/apis/mailgun/v1alpha1.MailgunRouteSpec"),
+						},
+					},
+					"status": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("./pkg/apis/mailgun/v1alpha1.MailgunRouteStatus"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"./pkg/apis/mailgun/v1alpha1.MailgunRouteSpec", "./pkg/apis/mailgun/v1alpha1.MailgunRouteStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+	}
+}
+
+func schema_pkg_apis_mailgun_v1alpha1_MailgunRouteSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "MailgunRouteSpec defines the desired state of MailgunRoute",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"domain": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Domain to create in mailgun: https://help.mailgun.com/hc/en-us/articles/202256730-How-Do-I-Pick-a-Domain-Name-for-My-Mailgun-Account-",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiKey": {
+						SchemaProps: spec.SchemaProps{
+							Description: "API key to authenticate to mailgun API https://help.mailgun.com/hc/en-us/articles/203380100-Where-Can-I-Find-My-API-Key-and-SMTP-Credentials-",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"expression": {
+						SchemaProps: spec.SchemaProps{
+							Description: "See https://documentation.mailgun.com/en/latest/api-routes.html#routes",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"description": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"priority": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"integer"},
+							Format: "int32",
+						},
+					},
+					"actions": {
+						VendorExtensible: spec.VendorExtensible{
+							Extensions: spec.Extensions{
+								"x-kubernetes-list-type": "set",
+							},
+						},
+						SchemaProps: spec.SchemaProps{
+							Type: []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Type:   []string{"string"},
+										Format: "",
+									},
+								},
+							},
+						},
+					},
+				},
+				Required: []string{"domain", "apiKey", "expression", "priority"},
+			},
+		},
+	}
+}
+
+func schema_pkg_apis_mailgun_v1alpha1_MailgunRouteStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "MailgunRouteStatus defines the observed state of MailgunRoute",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"id": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+				},
+				Required: []string{"id"},
 			},
 		},
 	}

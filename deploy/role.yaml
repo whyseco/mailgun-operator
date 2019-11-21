@@ -59,5 +59,6 @@ rules:
   resources:
   - '*'
   - mailgundomains
+  - mailgunroutes
   verbs:
   - '*'

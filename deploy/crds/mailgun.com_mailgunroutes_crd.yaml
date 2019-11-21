@@ -1,0 +1,71 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: mailgunroutes.mailgun.com
+spec:
+  group: mailgun.com
+  names:
+    kind: MailgunRoute
+    listKind: MailgunRouteList
+    plural: mailgunroutes
+    singular: mailgunroute
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: MailgunRoute is the Schema for the mailgunroutes API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: MailgunRouteSpec defines the desired state of MailgunRoute
+          properties:
+            actions:
+              items:
+                type: string
+              minItems: 1
+              type: array
+            apiKey:
+              description: API key to authenticate to mailgun API https://help.mailgun.com/hc/en-us/articles/203380100-Where-Can-I-Find-My-API-Key-and-SMTP-Credentials-
+              type: string
+            description:
+              type: string
+            domain:
+              description: 'Domain to create in mailgun: https://help.mailgun.com/hc/en-us/articles/202256730-How-Do-I-Pick-a-Domain-Name-for-My-Mailgun-Account-'
+              type: string
+            expression:
+              description: See https://documentation.mailgun.com/en/latest/api-routes.html#routes
+              type: string
+            priority:
+              type: integer
+          required:
+          - apiKey
+          - domain
+          - expression
+          - priority
+          type: object
+        status:
+          description: MailgunRouteStatus defines the observed state of MailgunRoute
+          properties:
+            id:
+              type: string
+          required:
+          - id
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true

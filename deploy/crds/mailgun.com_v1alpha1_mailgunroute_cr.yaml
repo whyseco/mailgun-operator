@@ -1,0 +1,12 @@
+apiVersion: mailgun.com/v1alpha1
+kind: MailgunRoute
+metadata:
+  name: example-mailgunroute
+spec:
+  domain: <domain>
+  apiKey: <apiKey>
+  expression: match_recipient(".*@bar.com")
+  priority: 0
+  actions:
+    - forward("mailbox@myapp.com")
+    - forward("http://myapp.com/messages")

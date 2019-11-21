@@ -32,14 +32,12 @@ spec:
           description: MailgunDomainSpec defines the desired state of MailgunDomain
           properties:
             apiKey:
+              description: API key to authenticate to mailgun API https://help.mailgun.com/hc/en-us/articles/203380100-Where-Can-I-Find-My-API-Key-and-SMTP-Credentials-
               type: string
             dkim_key_size:
               type: integer
             domain:
-              description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-                Important: Run "operator-sdk generate k8s" to regenerate code after
-                modifying this file Add custom validation using kubebuilder tags:
-                https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
+              description: 'Domain to create in mailgun: https://help.mailgun.com/hc/en-us/articles/202256730-How-Do-I-Pick-a-Domain-Name-for-My-Mailgun-Account-'
               type: string
             force_dkim_authority:
               type: boolean
@@ -49,6 +47,7 @@ spec:
               minItems: 0
               type: array
             password:
+              description: See https://documentation.mailgun.com/en/latest/api-domains.html#domains
               type: string
             spamAction:
               type: string
@@ -62,6 +61,53 @@ spec:
           type: object
         status:
           description: MailgunDomainStatus defines the observed state of MailgunDomain
+          properties:
+            domainState:
+              type: string
+            receivingDnsRecord:
+              items:
+                description: MailgunDomainDnsRecord defines the receiving and sending
+                  dns record provided by mailgun
+                properties:
+                  name:
+                    type: string
+                  priority:
+                    type: string
+                  recordType:
+                    type: string
+                  valid:
+                    type: string
+                  value:
+                    type: string
+                required:
+                - recordType
+                - valid
+                - value
+                type: object
+              type: array
+            sendingDnsRecord:
+              items:
+                description: MailgunDomainDnsRecord defines the receiving and sending
+                  dns record provided by mailgun
+                properties:
+                  name:
+                    type: string
+                  priority:
+                    type: string
+                  recordType:
+                    type: string
+                  valid:
+                    type: string
+                  value:
+                    type: string
+                required:
+                - recordType
+                - valid
+                - value
+                type: object
+              type: array
+          required:
+          - domainState
           type: object
       type: object
   version: v1alpha1

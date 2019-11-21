@@ -6,9 +6,9 @@ import (
 
 	"time"
 
-	"github.com/thoas/go-funk"
 	"github.com/go-logr/logr"
 	"github.com/mailgun/mailgun-go/v3"
+	"github.com/thoas/go-funk"
 	mailgunv1alpha1 "github.com/whyseco/mailgun-operator/pkg/apis/mailgun/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -93,29 +93,6 @@ func (r *ReconcileMailgunWebhook) Reconcile(request reconcile.Request) (reconcil
 	defer cancel()
 
 	mg := mailgun.NewMailgun(instance.Spec.Domain, instance.Spec.ApiKey)
-
-	if err := checkWebhook(ctx, mg, "clicked", instance.Spec.Clicked); err != nil {
-		return reconcile.Result{}, err
-	}
-	if err := checkWebhook(ctx, mg, "complained", instance.Spec.Complained); err != nil {
-		return reconcile.Result{}, err
-	}
-	if err := checkWebhook(ctx, mg, "delivered", instance.Spec.Delivered); err != nil {
-		return reconcile.Result{}, err
-	}
-	if err := checkWebhook(ctx, mg, "opened", instance.Spec.Opened); err != nil {
-		return reconcile.Result{}, err
-	}
-	if err := checkWebhook(ctx, mg, "permanent_fail", instance.Spec.PermanentFail); err != nil {
-		return reconcile.Result{}, err
-	}
-	if err := checkWebhook(ctx, mg, "temporary_fail", instance.Spec.TemporaryFail); err != nil {
-		return reconcile.Result{}, err
-	}
-	if err := checkWebhook(ctx, mg, "unsubscribed", instance.Spec.Unsubscribed); err != nil {
-		return reconcile.Result{}, err
-	}
-
 	// Check if the Webhook instance is marked to be deleted, which is
 	// indicated by the deletion timestamp being set.
 	isWebhookMarkedToBeDeleted := instance.GetDeletionTimestamp() != nil
@@ -145,6 +122,28 @@ func (r *ReconcileMailgunWebhook) Reconcile(request reconcile.Request) (reconcil
 		if err := r.addFinalizer(reqLogger, instance); err != nil {
 			return reconcile.Result{}, err
 		}
+	}
+
+	if err := checkWebhook(ctx, mg, "clicked", instance.Spec.Clicked); err != nil {
+		return reconcile.Result{}, err
+	}
+	if err := checkWebhook(ctx, mg, "complained", instance.Spec.Complained); err != nil {
+		return reconcile.Result{}, err
+	}
+	if err := checkWebhook(ctx, mg, "delivered", instance.Spec.Delivered); err != nil {
+		return reconcile.Result{}, err
+	}
+	if err := checkWebhook(ctx, mg, "opened", instance.Spec.Opened); err != nil {
+		return reconcile.Result{}, err
+	}
+	if err := checkWebhook(ctx, mg, "permanent_fail", instance.Spec.PermanentFail); err != nil {
+		return reconcile.Result{}, err
+	}
+	if err := checkWebhook(ctx, mg, "temporary_fail", instance.Spec.TemporaryFail); err != nil {
+		return reconcile.Result{}, err
+	}
+	if err := checkWebhook(ctx, mg, "unsubscribed", instance.Spec.Unsubscribed); err != nil {
+		return reconcile.Result{}, err
 	}
 
 	return reconcile.Result{}, nil
