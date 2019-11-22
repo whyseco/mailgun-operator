@@ -2,11 +2,15 @@
 Declare your mailgun configuration using Kubernetes custom resources
 
 Available :
-    - Create your domain
-    - Configure webhooks
-    - Configure routes
+- Create your domain
+- Configure webhooks
+- Configure routes
   
 # Instalation
+
+```
+kubectl apply -f https://raw.githubusercontent.com/whyseco/mailgun-operator/master/deploy/bundle.yaml
+```
 
 # Usage
 ## Prerequisite
