@@ -16,7 +16,7 @@ spec:
       containers:
         - name: mailgun-operator
           # Replace this with the built image name
-          image: REPLACE_IMAGE
+          image: whyse/mailgun-operator:v0.0.1
           command:
           - mailgun-operator
           imagePullPolicy: Always
