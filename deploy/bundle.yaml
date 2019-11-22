@@ -31,6 +31,7 @@ spec:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: "mailgun-operator"
+---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -42,6 +43,7 @@ roleRef:
   kind: Role
   name: mailgun-operator
   apiGroup: rbac.authorization.k8s.io
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -106,6 +108,7 @@ rules:
   - mailgunroutes
   verbs:
   - '*'
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
