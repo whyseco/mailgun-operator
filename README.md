@@ -111,3 +111,5 @@ Execute `kubectl apply -f mg-routes.yaml` to configure routes, **deleting the ob
 All external services are part of your infrastructure and their configurations is almost always done by a human.
 I needed to version my external service configuration and have an automatic way to provide configuration for every environment. 
 Kubernetes custom resources with a mailgun operator is the perfect way to have a declarative configuration for my external services.
+
+Declare all the things : https://medium.com/@kyann/declare-all-the-things-9048397f183e
