@@ -6,7 +6,7 @@ Available :
 - Configure webhooks
 - Configure routes
   
-# Instalation
+# Installation
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/whyseco/mailgun-operator/master/deploy/bundle.yaml
