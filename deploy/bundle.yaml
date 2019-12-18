@@ -113,3 +113,297 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: mailgun-operator
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: mailgundomains.mailgun.com
+spec:
+  group: mailgun.com
+  names:
+    kind: MailgunDomain
+    listKind: MailgunDomainList
+    plural: mailgundomains
+    singular: mailgundomain
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: MailgunDomain is the Schema for the mailgundomains API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: MailgunDomainSpec defines the desired state of MailgunDomain
+          properties:
+            dkimKeySize:
+              type: integer
+            domain:
+              description: Domain to use in mailgun
+              type: string
+            forceDkimAuthority:
+              type: boolean
+            ips:
+              items:
+                type: string
+              minItems: 0
+              type: array
+            password:
+              description: See https://documentation.mailgun.com/en/latest/api-domains.html#domains
+              type: string
+            secretName:
+              description: secret name where we can find apiKey
+              type: string
+            spamAction:
+              type: string
+            webScheme:
+              type: string
+            wildcard:
+              type: boolean
+          required:
+          - domain
+          - secretName
+          type: object
+        status:
+          description: MailgunDomainStatus defines the observed state of MailgunDomain
+          properties:
+            domainState:
+              type: string
+            receivingDnsRecord:
+              items:
+                description: MailgunDomainDnsRecord defines the receiving and sending
+                  dns record provided by mailgun
+                properties:
+                  name:
+                    type: string
+                  priority:
+                    type: string
+                  recordType:
+                    type: string
+                  valid:
+                    type: string
+                  value:
+                    type: string
+                required:
+                - recordType
+                - valid
+                - value
+                type: object
+              type: array
+            sendingDnsRecord:
+              items:
+                description: MailgunDomainDnsRecord defines the receiving and sending
+                  dns record provided by mailgun
+                properties:
+                  name:
+                    type: string
+                  priority:
+                    type: string
+                  recordType:
+                    type: string
+                  valid:
+                    type: string
+                  value:
+                    type: string
+                required:
+                - recordType
+                - valid
+                - value
+                type: object
+              type: array
+          required:
+          - domainState
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: mailgunroutes.mailgun.com
+spec:
+  group: mailgun.com
+  names:
+    kind: MailgunRoute
+    listKind: MailgunRouteList
+    plural: mailgunroutes
+    singular: mailgunroute
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: MailgunRoute is the Schema for the mailgunroutes API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: MailgunRouteSpec defines the desired state of MailgunRoute
+          properties:
+            actions:
+              items:
+                type: string
+              minItems: 1
+              type: array
+            description:
+              type: string
+            domain:
+              description: 'Domain to create in mailgun: https://help.mailgun.com/hc/en-us/articles/202256730-How-Do-I-Pick-a-Domain-Name-for-My-Mailgun-Account-'
+              type: string
+            expression:
+              description: See https://documentation.mailgun.com/en/latest/api-routes.html#routes
+              type: string
+            priority:
+              type: integer
+            secretName:
+              description: secret name where we can find apiKey
+              type: string
+          required:
+          - domain
+          - expression
+          - priority
+          - secretName
+          type: object
+        status:
+          description: MailgunRouteStatus defines the observed state of MailgunRoute
+          properties:
+            id:
+              type: string
+          required:
+          - id
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: mailgunwebhooks.mailgun.com
+spec:
+  group: mailgun.com
+  names:
+    kind: MailgunWebhook
+    listKind: MailgunWebhookList
+    plural: mailgunwebhooks
+    singular: mailgunwebhook
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: MailgunWebhook is the Schema for the mailgunwebhooks API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: MailgunWebhookSpec defines the desired state of MailgunWebhook
+          properties:
+            clicked:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
+            complained:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
+            delivered:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
+            domain:
+              description: Domain to use in mailgun
+              type: string
+            opened:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
+            permanentFail:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
+            secretName:
+              description: secret name where we can find apiKey
+              type: string
+            temporaryFail:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
+            unsubscribed:
+              items:
+                type: string
+              maxItems: 3
+              minItems: 0
+              type: array
+          required:
+          - domain
+          - secretName
+          type: object
+        status:
+          description: MailgunWebhookStatus defines the observed state of MailgunWebhook
+          properties:
+            ready:
+              description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                of cluster Important: Run "operator-sdk generate k8s" to regenerate
+                code after modifying this file Add custom validation using kubebuilder
+                tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
+              type: boolean
+          required:
+          - ready
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
